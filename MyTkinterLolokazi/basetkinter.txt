@@ -1,0 +1,24 @@
+
+
+
+db = sqlite3.connect('BigFail.db')
+cur = db.cursor()
+
+cur.execute("""CREATE TABLE IF NOT EXISTS lessons
+            name TEXT  NOT NULL,
+            max_count INT,
+            min_age INT,
+            max_age INT
+            """)
+
+
+def create_master():
+    with sqlite3.connect('BigFail.db') as con:
+        cur = con.cursor()
+        date = ent_1, ent_2, ent_3, ent_4
+        cur.execute("""INSERT INTO lessons (name, max_count, min_age, max_age)
+         VALUES (?,?,?,?)""", date)
+        ent_1.delete(0, 'end')
+        ent_2.delete(0, 'end')
+        ent_3.delete(0, 'end')
+        ent_4.delete(0, 'end')
