@@ -1,5 +1,5 @@
 import sqlite3
-from tkinter import Entry, Tk, Label, Button
+from tkinter import Entry, Tk, Label, Button, Variable, Listbox
 from tkinter.messagebox import showinfo
 
 
@@ -13,6 +13,12 @@ cur.execute("""CREATE TABLE IF NOT EXISTS lessons(
             max_age INT
             )""")
 
+cur.execute("""CREATE TABLE IF NOT EXISTS users(
+            name_lesson TEXT,
+            name_user TEXT,
+            age_user INT
+)""")
+
 
 root = Tk()
 
@@ -23,64 +29,81 @@ label = Label(text='Здравстуйте! Чтобы зарегистиров�
 root.resizable(False, False)
 label.place(x=40, y=5)
 
+def login_master_class ():
 
-def entry_registration_name_master_class_focus(event):
-    name: str = 'Введите назнание желаемого мастер класса'
-    if entry_registration_name_master_class.get() == name:
-        entry_registration_name_master_class.delete(0, "end")
+    login_window = Tk()
+    login_window.title('Регистрация на класс')
+    login_window.geometry('450x300')
+    login_window.resizable(False, False)
 
-
-def entry_registration_name_master_class_not_focus(event):
-    if entry_registration_name_master_class.get() == '':
-        entry_registration_name_master_class.insert(
-            0, "Введите назнание желаемого мастер класса")
-
-
-entry_registration_name_master_class = Entry(root, width=41)
-entry_registration_name_master_class.place(x=40, y=40)
-
-entry_registration_name_master_class.insert(
-    0, 'Введите назнание желаемого мастер класса')
-
-entry_registration_name_master_class.bind(
-    "<FocusIn>", entry_registration_name_master_class_focus)
-
-entry_registration_name_master_class.bind(
-    "<FocusOut>", entry_registration_name_master_class_not_focus)
+    # def entry_registration_name_master_class_focus(event):
+    #     name: str = 'Введите назнание желаемого мастер класса'
+    #     if entry_registration_name_master_class.get() == name:
+    #         entry_registration_name_master_class.delete(0, "end")
 
 
-def entry_registration_name_focus(event):
-    if entry_registration_name.get() == 'Введите свое имя':
-        entry_registration_name.delete(0, "end")
+    # def entry_registration_name_master_class_not_focus(event):
+    #     if entry_registration_name_master_class.get() == '':
+    #         entry_registration_name_master_class.insert(
+    #             0, "Введите назнание желаемого мастер класса")
 
 
-def entry_registration_name_not_focus(event):
-    if entry_registration_name.get() == '':
-        entry_registration_name.insert(0, 'Введите свое имя')
+    # entry_registration_name_master_class = Entry(login_window, width=41)
+    # entry_registration_name_master_class.place(x=40, y=40)
+
+    # entry_registration_name_master_class.insert(
+    #     0, 'Введите назнание желаемого мастер класса')
+
+    # entry_registration_name_master_class.bind(
+    #     "<FocusIn>", entry_registration_name_master_class_focus)
+
+    # entry_registration_name_master_class.bind(
+    #     "<FocusOut>", entry_registration_name_master_class_not_focus)
+
+    with sqlite3.connect('Tkinter_users.db') as con:
+        cur = con.cursor()
+        cur.execute("SELECT name FROM lessons")
+        data = cur.fetchall()
+    # print(str(data))        
+    lessons_var = Variable(login_window, value = data)
+    lessons_box = Listbox(login_window, listvariable=lessons_var, height=len(data)).place(x=0,y=0)
 
 
-entry_registration_name = Entry(width=41)
-entry_registration_name.place(x=40, y=65)
-entry_registration_name.insert(0, 'Введите свое имя')
-entry_registration_name.bind("<FocusIn>", entry_registration_name_focus)
-entry_registration_name.bind("<FocusOut>", entry_registration_name_not_focus)
+
+    def entry_registration_name_focus(event):
+        if entry_registration_name.get() == 'Введите свое имя':
+            entry_registration_name.delete(0, "end")
 
 
-def entry_registration_age_focus(event):
-    if entry_registration_age.get() == 'Введите свой возраст':
-        entry_registration_age.delete(0, "end")
+    def entry_registration_name_not_focus(event):
+        if entry_registration_name.get() == '':
+            entry_registration_name.insert(0, 'Введите свое имя')
 
 
-def entry_registration_age_not_focus(event):
-    if entry_registration_age.get() == "":
-        entry_registration_age.insert(0, 'Введите свой возраст')
+    entry_registration_name = Entry(login_window, width=41)
+    entry_registration_name.place(x=135, y=5)
+    entry_registration_name.insert(0, 'Введите свое имя')
+    entry_registration_name.bind("<FocusIn>", entry_registration_name_focus)
+    entry_registration_name.bind("<FocusOut>", entry_registration_name_not_focus)
 
 
-entry_registration_age = Entry(width=41)
-entry_registration_age.place(x=40, y=90)
-entry_registration_age.insert(0, 'Введите свой возраст')
-entry_registration_age.bind("<FocusIn>", entry_registration_age_focus)
-entry_registration_age.bind("<FocusOut>", entry_registration_age_not_focus)
+    def entry_registration_age_focus(event):
+        if entry_registration_age.get() == 'Введите свой возраст':
+            entry_registration_age.delete(0, "end")
+
+
+    def entry_registration_age_not_focus(event):
+        if entry_registration_age.get() == "":
+            entry_registration_age.insert(0, 'Введите свой возраст')
+
+
+    entry_registration_age = Entry(login_window, width=41)
+    entry_registration_age.place(x=135, y=30)
+    entry_registration_age.insert(0, 'Введите свой возраст')
+    entry_registration_age.bind("<FocusIn>", entry_registration_age_focus)
+    entry_registration_age.bind("<FocusOut>", entry_registration_age_not_focus)
+
+    
 
 
 def create_window():
@@ -176,6 +199,8 @@ def create_window():
 
 button_for_create = Button(text='Зарегистрировать новый мастер класс',
                                 command=create_window).place(x=410, y=360)
+
+button_for_login = Button(text='Зарегаться', command=login_master_class).place(x=150, y=150)
 
 for i in cur.execute("SELECT * FROM lessons"):
     print([*i])
